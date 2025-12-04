@@ -16,5 +16,16 @@ static inline q15 sat16(int32_t x){
     return (q15)x;
 }
 static inline q15 mul_q15(q15 a, q15 b){
-    return (q15)(((int32_t)a * (int32_t)b) >> 15);
+    // Q15 * Q15 -> Q30 >>15 -> Q15, with saturation
+    int32_t prod = (int32_t)a * (int32_t)b;   // Q30
+    int32_t shifted = prod >> 15;             // Q15 (still 32-bit)
+    return sat16(shifted);
+}
+static inline q15 add_q15(q15 a, q15 b){
+    int32_t s = (int32_t)a + (int32_t)b;
+    return sat16(s);
+}
+static inline q15 sub_q15(q15 a, q15 b){
+    int32_t s = (int32_t)a - (int32_t)b;
+    return sat16(s);
 }
